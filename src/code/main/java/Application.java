@@ -50,6 +50,12 @@ CREATE TABLE T5 (
    CREATED timestamp NOT NULL
 ); PARTITION TABLE T5 ON COLUMN IMSI;
 CREATE INDEX t5Index ON T5(imsi);
+CREATE TABLE T5 (
+   IMSI varchar(15) NOT NULL,
+   TC integer NOT NULL,
+   CREATED timestamp NOT NULL
+); PARTITION TABLE T5 ON COLUMN IMSI;
+CREATE INDEX t5Index ON T5(imsi);
 
 CREATE TABLE T6 (
    IMSI varchar(15) NOT NULL,
@@ -65,7 +71,8 @@ CREATE TABLE T7 (
 );PARTITION TABLE T7 ON COLUMN IMSI;
 CREATE INDEX t7Index ON T7(imsi);
 
-CREATE TABLE SUPER (
+--SUPER TABLE SOURCES
+ CREATE TABLE SUPER (
    IMSI varchar(15) NOT NULL,
    C1 varchar(15) ,
    C2 varchar(20),
@@ -75,63 +82,55 @@ CREATE TABLE SUPER (
     TC integer DEFAULT  NULL,
     TD integer DEFAULT NULL,
     TE integer DEFAULT NULL,
+	ENBID integer DEFAULT NULL,
    CREATED timestamp NOT NULL,
-   PRIMARY KEY (IMSI)
-);PARTITION TABLE SUPER ON COLUMN IMSI;
+   PRIMARY KEY (IMSI))
+   USING TTL 10 MINUTES ON COLUMN CREATED;
+   PARTITION TABLE SUPER ON COLUMN IMSI;
+
 
 SELECT Table1.IMSI, Table1.c1,Table1.c2,Table2.aoa,Table2.Created FROM T1 Table1, T2 Table2 Where Table1.IMSI=Table2.IMSI;
+*/
+private static void CreateTimestamp(String thread) {
+    System.out.println("Thread:" + thread + " at:" + new Date());
+}
 
- */
+
 	public static void main(String[] args) throws Exception {
         Random rand= new Random();
         String[] c1=new String[11];
         String[] c2=new String[11];
         String[] columns=new String[4];
+        String[] columns1=new String[3];
+        String[] columns2=new String[4];
         columns[0]="IMSI";
         columns[1]="C1";
         columns[2]="C2";
         columns[3]="CREATED";
 
+        columns1[0]="IMSI";
+        columns1[1]="AOA";
+        columns1[2]="CREATED";
 
-        c1[0]="Doug";
-        c1[1]="Min";
-        c1[2]="Simon";
-        c1[3]="Seeta";
-        c1[4]="Dheeraj";
-        c1[5]="Sarah";
-        c1[6]="Alan";
-        c1[7]="David";
-        c1[8]="Bob";
-        c1[9]="Dude";
-        c1[10]="Doug1";
 
-        c2[0]="Dougs";
-        c2[1]="Mins";
-        c2[2]="Simons";
-        c2[3]="Seetas";
-        c2[4]="Dheerajs";
-        c2[5]="Sarahs";
-        c2[6]="Alans";
-        c2[7]="Davids";
-        c2[8]="Bobs";
-        c2[9]="Dudes";
-        c2[10]="Dougs2";
-        String column1="";
-        String column2="";
-        String column3="";
-        int aoa;
-        int ta;
-		Client client = ClientFactory.createClient();
+        columns2[0]="IMSI";
+        columns2[1]="TA";
+        columns2[2]="ENBID";
+        columns2[3]="CREATED";
+
+
+
+	//	Client client = ClientFactory.createClient();
 	//	client.createConnection("54.90.179.48");
     //    client.createConnection("54.165.216.194");
     //    client.createConnection("18.208.228.192");
-       client.createConnection("192.168.17.138");
+ //      client.createConnection("192.168.17.138");
 			//VoltBulkLoader bulkLoader = client.getNewBulkLoader("TEST_TABLE", 5000, new TestCallback());
-        VoltBulkLoader bulkLoader1 = client.getNewBulkLoader("SUPER", 100,true,columns,new TestCallback());
+   //     VoltBulkLoader bulkLoader1 = client.getNewBulkLoader("SUPER", 1000,true,columns,new TestCallback());
 
-/*        VoltBulkLoader bulkLoader2 = client.getNewBulkLoader("T2", 100,true, new TestCallback());
-        VoltBulkLoader bulkLoader3 = client.getNewBulkLoader("T3", 100,true, new TestCallback());
-        VoltBulkLoader bulkLoader4 = client.getNewBulkLoader("T4", 100,true, new TestCallback());
+     //  VoltBulkLoader bulkLoader2 = client.getNewBulkLoader("SUPER", 1000,true,columns1, new TestCallback());
+      //  VoltBulkLoader bulkLoader3 = client.getNewBulkLoader("SUPER", 1000,true,columns2, new TestCallback());
+/*         VoltBulkLoader bulkLoader4 = client.getNewBulkLoader("T4", 100,true, new TestCallback());
        VoltBulkLoader bulkLoader5 = client.getNewBulkLoader("T5", 100,true, new TestCallback());
        VoltBulkLoader bulkLoader6 = client.getNewBulkLoader("T6", 100,true, new TestCallback());
         VoltBulkLoader bulkLoader7 = client.getNewBulkLoader("T7", 100,true, new TestCallback());
@@ -146,12 +145,150 @@ SELECT Table1.IMSI, Table1.c1,Table1.c2,Table2.aoa,Table2.Created FROM T1 Table1
         VoltTable T7;
 
 
+
+        Thread t1 = new Thread(new Runnable() {
+            public void run() {
+                try {
+                    Client client = ClientFactory.createClient();
+                    	client.createConnection("34.229.237.142");
+                        client.createConnection("34.203.221.20");
+                        client.createConnection("52.207.226.178");
+                  //  client.createConnection("192.168.17.138");
+                    //VoltBulkLoader bulkLoader = client.getNewBulkLoader("TEST_TABLE", 5000, new TestCallback());
+                    VoltBulkLoader bulkLoader1 = client.getNewBulkLoader("SUPER", 70,true,columns,new TestCallback());
+
+
+                    Random rand= new Random();
+                String[] c1=new String[11];
+                String[] c2=new String[11];
+
+                String column1="";
+                String column2="";
+                String column3="";
+
+
+                    c1[0]="Doug";
+                    c1[1]="Min";
+                    c1[2]="Simon";
+                    c1[3]="Seeta";
+                    c1[4]="Dheeraj";
+                    c1[5]="Sarah";
+                    c1[6]="Alan";
+                    c1[7]="David";
+                    c1[8]="Bob";
+                    c1[9]="Dude";
+                    c1[10]="Doug1";
+
+                    c2[0]="Dougs";
+                    c2[1]="Mins";
+                    c2[2]="Simons";
+                    c2[3]="Seetas";
+                    c2[4]="Dheerajs";
+                    c2[5]="Sarahs";
+                    c2[6]="Alans";
+                    c2[7]="Davids";
+                    c2[8]="Bobs";
+                    c2[9]="Dudes";
+                    c2[10]="Dougs2";
+
+                    CreateTimestamp("thread 1 Started");
+                for(int i=0; i<1000001; i++) {
+                    column1 = String.valueOf(i);
+                    column2 = c1[rand.nextInt(10)];
+                    column3 = c2[rand.nextInt(10)];
+                    //bulkLoader1
+                    bulkLoader1.insertRow(i, column1, column2, column3, new Date().getTime());
+
+                    //         client.callProcedure("@AdHoc", "UPSERT INTO SUPER (imsi,c1,c2,created) values ('" + column1 + "','" + column2 + "','" + column3 + "',now());");
+                }
+                    CreateTimestamp("thread 1 Stopped");
+            }
+                catch(Exception e) {
+
+                }
+            }
+        });
+
+        Thread t2 = new Thread(new Runnable() {
+            public void run() {
+
+                try {
+                    Client client = ClientFactory.createClient();
+                    client.createConnection("34.229.237.142");
+                    client.createConnection("34.203.221.20");
+                    client.createConnection("52.207.226.178");
+                 //   client.createConnection("192.168.17.138");
+                    //VoltBulkLoader bulkLoader = client.getNewBulkLoader("TEST_TABLE", 5000, new TestCallback());
+                    VoltBulkLoader bulkLoader2 = client.getNewBulkLoader("SUPER", 70,true,columns1,new TestCallback());
+
+                    Random rand= new Random();
+                    String column1="";
+
+
+                    int aoa;
+                    CreateTimestamp("Thread 2 Started");
+                    for(int i=500000; i<1000001; i++) {
+                        column1=String.valueOf(i);
+                        aoa=rand.nextInt(10);
+                        bulkLoader2.insertRow(i,column1,aoa, new Date().getTime());
+                        //      client.callProcedure("@AdHoc", "UPSERT INTO SUPER (imsi,aoa,created) values ('"+column1+"'," +aoa + ",now());");
+
+                    }
+                    for(int i=500000; i>0; i--) {
+                        column1=String.valueOf(i);
+                        aoa=rand.nextInt(10);
+                        bulkLoader2.insertRow(i,column1,aoa, new Date().getTime());
+                        //      client.callProcedure("@AdHoc", "UPSERT INTO SUPER (imsi,aoa,created) values ('"+column1+"'," +aoa + ",now());");
+
+                    }
+                    CreateTimestamp("Thread 2 Stopped");
+                }
+                catch(Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        Thread t3 = new Thread(new Runnable() {
+            public void run() {
+                try {
+                    Client client = ClientFactory.createClient();
+                    client.createConnection("34.229.237.142");
+                    client.createConnection("34.203.221.20");
+                    client.createConnection("52.207.226.178");
+                   // client.createConnection("192.168.17.138");
+                    //VoltBulkLoader bulkLoader = client.getNewBulkLoader("TEST_TABLE", 5000, new TestCallback());
+                    VoltBulkLoader bulkLoader3 = client.getNewBulkLoader("SUPER", 70,true,columns2,new TestCallback());
+                    Random rand= new Random();
+                    String column1="";
+                    int ta;
+                    int enbid;
+                    CreateTimestamp("Thread 3 Started");
+                    for(int i=1000001; i>0; i--) {
+                        column1=String.valueOf(i);
+                        ta=rand.nextInt(10);
+                        enbid=rand.nextInt(100);
+                        bulkLoader3.insertRow(i,column1,ta,enbid, new Date().getTime());
+//            client.callProcedure("@AdHoc", "UPSERT INTO SUPER (imsi,ta,created) values ('"+column1+"'," +ta + ",now());");
+
+                    }
+                    CreateTimestamp("Thread 3 Stopped");
+                }
+                catch(Exception e) {
+
+                }
+            }
+        });
+
+       t1.start();
+        t2.start();
+     t3.start();
         //Just plain bulk insert values.
 		//for(int i=0; i<Integer.MAX_VALUE; i++) {
 	//		bulkLoader.insertRow(i, i, i, new Date());
 	//	}
         // For T1
-        for(int i=0; i<1000001; i++) {
+  /*      for(int i=0; i<1000001; i++) {
             column1 = String.valueOf(i);
             column2 = c1[rand.nextInt(10)];
             column3 = c2[rand.nextInt(10)];
@@ -161,22 +298,29 @@ SELECT Table1.IMSI, Table1.c1,Table1.c2,Table2.aoa,Table2.Created FROM T1 Table1
    //         client.callProcedure("@AdHoc", "UPSERT INTO SUPER (imsi,c1,c2,created) values ('" + column1 + "','" + column2 + "','" + column3 + "',now());");
         }
         // For T2
-   /*     for(int i=0; i<1000001; i++) {
+       for(int i=0; i<1000001; i++) {
             column1=String.valueOf(i);
           aoa=rand.nextInt(10);
-            bulkLoader2.insertRow(i,column1,aoa, new Date());
-           client.callProcedure("@AdHoc", "UPSERT INTO SUPER (imsi,aoa,created) values ('"+column1+"'," +aoa + ",now());");
+            bulkLoader2.insertRow(i,column1,aoa, new Date().getTime());
+     //      client.callProcedure("@AdHoc", "UPSERT INTO SUPER (imsi,aoa,created) values ('"+column1+"'," +aoa + ",now());");
 
         }
         // For T3
+        int ta;
+        int enbid;
+        columns2[0]="IMSI";
+        columns2[1]="TA";
+        columns2[1]="ENBID";
+        columns2[2]="CREATED";
         for(int i=0; i<1000001; i++) {
             column1=String.valueOf(i);
             ta=rand.nextInt(10);
-            bulkLoader3.insertRow(i,column1,ta, new Date());
-            client.callProcedure("@AdHoc", "UPSERT INTO SUPER (imsi,ta,created) values ('"+column1+"'," +ta + ",now());");
+            enbid=rand.nextInt(100);
+            bulkLoader3.insertRow(i,column1,ta,enbid, new Date().getTime());
+//            client.callProcedure("@AdHoc", "UPSERT INTO SUPER (imsi,ta,created) values ('"+column1+"'," +ta + ",now());");
 
         }
-        // For T4
+    /*     // For T4
         for(int i=0; i<1000001; i++) {
             column1=String.valueOf(i);
             ta=rand.nextInt(10);

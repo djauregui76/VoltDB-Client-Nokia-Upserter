@@ -352,7 +352,7 @@ public class PerPartitionTable {
 
             }
             else {
-                m_clientImpl.callProcedure(callback, m_procName, rpartitionParam, m_tableName, m_upsert, toSend);
+             m_clientImpl.callProcedure(callback, m_procName, rpartitionParam, m_tableName, m_upsert, toSend);
             }
         //
         }
